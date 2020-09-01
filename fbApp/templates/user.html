@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <title>User Info</title>
+</head>
+<body style="background-color: #f0f2f5;">
+    {% extends 'navbar.html' %}
+    {% block content %}
+    <div class="container">
+        <div class="head" style="background-color: white; margin: 0px -46px;">
+            <div>
+                <img class="coverphoto" src={{user.cover.url}} data-toggle="modal" data-target="#coverimgmodal" style="cursor:pointer">
+                {% if loggedinuser == user %}
+                <div class="coverphotoedit" data-toggle="modal" data-target="#coverphotomodal" style="cursor:pointer">
+                    <img class="userphotoedit_photo" src="/media/camera.png"><p class="coverphotoedit_word">Edit Cover Photo</p>
+                </div>
+                {% endif %}
+                <img class="userphoto" src={{user.pic.url}} data-toggle="modal" data-target="#userimgmodal" style="cursor:pointer">
+                {% if loggedinuser == user %}
+                <div class="userphotoedit" data-toggle="modal" data-target="#userphotomodal" style="cursor:pointer">
+                    <img class="userphotoedit_photo" src="/media/camera.png">
+                </div>
+                {% endif %}
+            </div>
+            <div style="margin-top: 50px;">
+                <h1 style="font-size: 35px; text-align: center; font-family: arial; font-weight: bold;">{{user.firstName}} {{user.lastName}}</h1>
+            </div>
+            <div style="padding-left:130px; padding-bottom: 10px;">
+                <div style="display: inline-block;">
+                    <a class="nav-link" href="/user/{{user.id}}">Timeline</a>
+                </div>
+                <div style="display: inline-block;">
+                    <a class="nav-link" href="/user/{{user.id}}/friends">Friends ({{friends.count}})</a>
+                </div>
+                <div style="display: inline-block;">
+                    <a class="nav-link" href="/user/{{user.id}}/photos">Photo</a>
+                </div>
+                {% if loggedinuser == user %}
+                {% else %}
+                    {% if user.id in myfriends %}
+                        <div style="display: inline-block; float: right; padding-right: 160px;">
+                            <form action="/unfriend" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <input type="hidden" name="flist" id="flist" value="{{user.id}}">
+                            <button class="btn" style="cursor: pointer;">Unfriend</button>
+                            </form>
+                        </div>
+                    {% else %}
+                        <div style="display: inline-block; float: right; padding-right: 160px;">
+                            <form action="/addfriend" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <input type="hidden" name="flist" id="flist" value="{{user.id}}">
+                            <button class="btn" style="cursor: pointer;">Add Friend</button>
+                            </form>
+                        </div>
+                {% endif %}
+                {% endif %}
+            </div>
+        </div>
+        <!-- modal for cover photo -->
+        <div class="modal fade" id="coverphotomodal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Select Cover Photo</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form action='/changecover' method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <input type="file" id="cover" name="cover" style="margin-top: 10px;">
+                            <br><br/>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- modal for user photo -->
+        <div class="modal fade" id="userphotomodal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Select User Photo</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form action='/changephoto' method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <input type="file" id="pic" name="pic" style="margin-top: 10px;">
+                            <br><br/>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- cover img modal -->
+    <div class="modal fade bd-example-modal-xl" tabindex="-1" id="coverimgmodal" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+          <div class="modal-content">
+            {% if user.cover %}
+            <img src="{{user.cover.url}}" width="200%" style="margin-left: -250px;">
+            {% endif %}
+          </div>
+        </div>
+    </div>
+    <!-- user img modal -->
+    <div class="modal fade bd-example-modal-xl" tabindex="-1" id="userimgmodal" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+          <div class="modal-content">
+            {% if user.pic %}
+            <img src="{{user.pic.url}}" width="200%" style="margin-left: -250px;">
+            {% endif %}
+          </div>
+        </div>
+    </div>
+    {% endblock %}
+</body>
+</html>
+

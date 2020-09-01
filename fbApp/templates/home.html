@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home</title>
+</head>
+<body style="background-color: #f0f2f5;">
+    {% extends 'navbar.html' %}
+    {% block content %}
+    <div class="container">
+      <div class="content" style="padding: 40px 25%">
+        <div class="content_posting" style="margin-bottom: 20px;">
+            <form action="/post" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.path }}">
+                <input type="hidden" name="p_to" id="p_to" value="{{loggedinuser.id}}">
+                <input type="text" class="form-control" name="content" id="content" placeholder="What's on your mind, {{loggedinuser.firstName}}?" style="border-radius: 80px; width: 100%; background-color: #f0f2f5;">
+                <input type="file" name="image" id="image" style="margin-top: 15px;">
+                <button type="submit" class="btn" style="float: right; margin-top: 10px; background-color: #f0f2f5;">Upload</button>
+            </form>
+        </div>
+        <div class="content_post" style="margin-top: 50px;">
+            <h5>Posts</h5>
+            {% for p in posts %}
+            <div style="border: #f0f2f5 1px solid; padding: 10px 15px; border-radius: 10px; margin: 20px 0px;">
+                {% if p.p_creater == p.p_to %}
+                <a href="/user/{{p.p_creater.id}}">{{p.p_creater.firstName}} {{p.p_creater.lastName}}</a>
+                {% if p.p_creater == loggedinuser or p.p_to == loggedinuser %}
+                <form action="/deletepost" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.path }}">
+                    <input type="hidden" name="postid" id="postid" value="{{p.id}}">
+                    <input type="image" alt="Submit" src="/media/close.png" style="display: inline; float: right; margin-top: -15px; width:20px">
+                </form>
+                {% endif %}
+                {% else %}
+                <p><a href="/user/{{p.p_creater.id}}">{{p.p_creater.firstName}} {{p.p_creater.lastName}}</a> > <a href="/user/{{p.p_to.id}}">{{p.p_to.firstName}} {{p.p_to.lastName}}</a></p>
+                {% if p.p_creater == loggedinuser or p.p_to == loggedinuser %}
+                <form action="/deletepost" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.path }}">
+                    <input type="hidden" name="postid" id="postid" value="{{p.id}}">
+                    <input type="image" alt="Submit" src="/media/close.png" style="display: inline; float: right; margin-top: -35px; width:20px">
+                </form>
+                {% endif %}
+                {% endif %}
+                <p>{{p.created_at}}</p>
+                {% if p.image %}
+                <a href="/post/{{p.id}}"><img src="{{p.image.url}}" style="border: 1px solid black;" width="100%" height="300px"></a>
+                <br></br>
+                {% endif %}
+                <p>{{p.content}}</p>
+                <div>
+                  {% for c in comments%}
+                      {% if c.c_message == p %}
+                      <p>>>{{c.content}}</p>
+                      {% if p.p_creater == loggedinuser or p.p_to == loggedinuser or c.c_creater == loggedinuser %}
+                      <form action="/deletecomment" method="post">
+                          {% csrf_token %}
+                          <input type="hidden" name="next" value="{{ request.path }}">
+                          <input type="hidden" name="commentid" id="commentid" value="{{c.id}}">
+                          <input type="image" alt="Submit" src="/media/close.png" style="display: inline; float: right; margin-top: -40px; width:20px">
+                      </form>
+                      {% endif %}
+                      <p>Commented by <a href="/user/{{c.c_creater.id}}">{{c.c_creater.firstName}} {{c.c_creater.lastName}}</a> at {{c.created_at}}</p>
+                      {% endif %}
+                  {% endfor %}
+                  <form action="/reply" method="post" enctype="multipart/form-data">
+                      {% csrf_token %}
+                      <input type="hidden" name="next" value="{{ request.path }}">
+                      <input type="hidden" name="c_message" id="c_message" value="{{p.id}}">
+                      <input type="text" class="form-control" name="content" id="content" placeholder="Write Comment Here" style="border-radius: 80px; width: 100%; background-color: #f0f2f5;">
+                  </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+</body>
+</html>

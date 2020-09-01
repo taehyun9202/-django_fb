@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <title>Photos</title>
+</head>
+<body>
+    {% include 'user.html' %}
+    {% block content %}
+    <div class="container">
+        <div class="content" style="padding-left:90px; margin-top: 20px;" >
+            <div class="content_info" style="margin-bottom: 20px; padding-bottom: 10px;">
+                <h5>Photos</h5>
+                {% for p in photos %}
+                    {% if p.image %}
+                    <a href="/post/{{p.id}}"><img src="{{p.image.url}}" style="border: black 1px solid;width: 24%; height: 249.59px; margin-bottom: 10px;"></a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+</body>
+</html>
+

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+</head>
+<body>
+    {% extends 'navbar.html' %}
+    {% block content %}
+    <div class="container">
+        <div style="padding-left: 50%; padding-top: 30px;">
+        <h1>Edit Profile</h1>
+            <form action="/update" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input class="registerinput" type="password" name="password" placeholder="Password">
+                <br></br>
+                <input class="registerinput" style="width:48%" type="text" name="firstName" placeholder="First Name">
+                <input class="registerinput" style="margin-left:3%; width:48%" type="text" name="lastName" placeholder="Last Name">
+                <br></br>
+                <input class="registerinput" type="password" name="newpw" placeholder="New Password">
+                <br></br>
+                <input class="registerinput" type="password" name="confirm" placeholder="Confirm Password">
+                <br></br>
+                <button type="submit" style="width: 100%;" class="btn btn-dark">Edit</button>
+            </form>
+        </div>
+    </div>
+    {% if messages %} 
+                <ul>
+                    {% for message in messages %}
+                        <li>{{message}}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+    {% endblock %}
+</body>
+</html>

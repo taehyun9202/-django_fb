@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <title>Post</title>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    {% block content %}
+    <div class="container">
+        <div class="content" style="padding-left:90px; margin-top: 20px; padding-right: 90px;" >
+            <div class="content_info" style="margin-bottom: 20px; padding-bottom: 10px;">
+                <h5>Post</h5>
+                {% if post.p_creater == post.p_to %}
+                    <p style="display: inline;"><a href="/user/{{post.p_creater.id}}">{{post.p_creater.firstName}} {{post.p_creater.lastName}}</a> posted at {{post.created_at}}</p>
+                {% else %}
+                    <p style="display: inline;"><a href="/user/{{post.p_creater.id}}">{{post.p_creater.firstName}} {{post.p_creater.lastName}}</a> posted to <a href="/user/{{post.p_to.id}}">{{post.p_to.firstName}} {{post.p_to.lastName}}</a> at {{post.created_at}}</p>
+                {% endif %}
+                {% if post.p_creater == loggedinuser or post.p_to == loggedinuser %}
+                <form action="/deletepost" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.path }}">
+                    <input type="hidden" name="postid" id="postid" value="{{post.id}}">
+                    <input type="image" alt="Submit" src="/media/close.png" style="display: inline; float: right; margin-top: -20px; width:20px">
+                </form>
+                {% endif %}
+                {% if post.image %}
+                <img src="{{post.image.url}}" data-toggle="modal" data-target="#photoimage" style="cursor:pointer" width="100%" height="300px" style="border: solid black 1px;">
+                <br></br>
+                {% endif %}
+                <p>{{post.content}}</p>
+                <div>
+                    {% for c in comments%}
+                        {% if c.c_message == post %}
+                        <p>>>{{c.content}}</p>
+                        {% if post.p_creater == loggedinuser or post.p_to == loggedinuser or c.c_creater == loggedinuser %}
+                        <form action="/deletecomment" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <input type="hidden" name="commentid" id="commentid" value="{{c.id}}">
+                            <input type="image" alt="Submit" src="/media/close.png" style="display: inline; float: right; margin-top: -40px; width:20px">
+                        </form>
+                        {% endif %}
+                        <p>Commented by <a href="/user/{{c.c_creater.id}}">{{c.c_creater.firstName}} {{c.c_creater.lastName}}</a> at {{c.created_at}}</p>
+                        {% endif %}
+                    {% endfor %}
+                    <form action="/reply" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <input type="hidden" name="c_message" id="c_message" value="{{post.id}}">
+                        <input type="text" class="form-control" name="content" id="content" placeholder="Write Comment Here" style="border-radius: 80px; width: 100%; background-color: #f0f2f5;">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+    <div class="modal fade bd-example-modal-xl" tabindex="-1" id="photoimage" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+          <div class="modal-content">
+            {% if post.image %}
+            <img src="{{post.image.url}}" width="200%" style="margin-left: -250px;">
+            {% endif %}
+          </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <title>Friends</title>
+</head>
+<body>
+    {% include 'user.html' %}
+    {% block content %}
+    <div class="container">
+        <div class="content" style="padding-left:90px; margin-top: 20px;" >
+            <div class="content_info" style="margin-bottom: 20px; padding-bottom: 10px;">
+                <h5>Find Friends</h5>
+                {% for u in friends %}
+                <div>
+                    <a href="/user/{{u.flist.id}}"><img src="{{u.flist.pic.url}}" style="display: inline-block; border: black 1px solid;width: 125px; height: 125px; margin-bottom: 10px;"></a>
+                    <div style="display: inline-block; vertical-align: top;">
+                        <a href="/user/{{u.flist.id}}"><p>{{u.flist.firstName}} {{u.flist.lastName}}</p></a>
+                        {% if u.flist.home %}
+                            <p>Lives in {{u.flist.home}}</p>
+                        {% endif %}
+                        {% if u.flist.work %}
+                            <p>Works at {{u.flist.work}}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us</title>
+</head>
+<body>
+    {% extends 'navbar.html' %}
+    {% block content %}
+    <div class="container" style="padding-top: 50px; padding-left: 60px;">
+        <div class="col-md-4" style="display: inline-block;">
+            <div>
+                <h5>Address</h5>
+                <p>5309 Chieftain cir</p>
+                <p>Alexandria, VA 22312</p>
+            </div>
+            <div>
+                <h5>Phone</h5>
+                <p>703-400-9295</p>
+            </div>
+            <div>
+                <h5>Email</h5>
+                <p>taehyun9202@hotmail.com</p>
+            </div>
+        </div> 
+        <div style="padding-left: 46%; margin-top: -250px;display: inline-block; vertical-align: top;">
+        <h3 style="margin-left: 10px;">Give Feedback</h3>
+        <form action="/sendemail" method="post">
+            {% csrf_token %}
+                <input type="hidden" name="name" value="{{loggedinuser.firstName}} {{loggedinuser.lastName}}">
+                <input type="hidden" name="email" value="{{loggedinuser.email}}">
+            <div class="col-md-10 form-group">
+                <label>Subject</label>
+                <input type="text" class="registerinput" name="subject">
+            </div>
+            <div class="col-md-10 form-group">
+            <label>Message</label>
+            <textarea class="registerinput" name="message" cols="60" rows="10"></textarea>               
+            </div>
+            <button type="submit" style="width: 465px; margin-left: 15px;" class="btn btn-sm btn-dark">Send Report</button>
+            </form>
+        </div>
+    </div>
+    {% if messages %} 
+    <ul>
+        {% for message in messages %}
+            <li>{{message}}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endblock %}
+</body>
+</html>

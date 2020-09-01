@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <title>Timeline</title>
+</head>
+<body>
+    {% include 'user.html' %}
+    {% block content %}
+    <div class="container">
+        <div class="content" style="padding-left:90px; margin-top: 20px;" >
+            <div class="content_info" style="margin-bottom: 20px; padding-bottom: 10px;">
+                <h5>Information</h5>
+                <div style="margin-top: 20px;">
+                    <div style="display:inline-block">
+                        <img src="/media/home.png" style="display:inline-block; margin-top: -5px;" width="20px">
+                        <p style="display:inline-block; margin-left: 10px;">Lives in {{user.home}}</p>
+                    </div>
+                    <div style="display:inline-block; float: right;">
+                        <img src="/media/edit.png" style="margin-top: -5px; margin-right: 10px;" width="20px">
+                        <img src="/media/close.png" style="margin-top: -5px;" width="20px">
+                    </div>
+                </div>
+                <div>
+                    <div style="display:inline-block">
+                        <img src="/media/work.png" style="display:inline-block; margin-top: -5px;" width="20px">
+                        <p style="display:inline-block; margin-left: 10px;">Works at {{user.work}}</p>
+                    </div>
+                    <div style="display:inline-block; float: right;">
+                        <img src="/media/edit.png" style="margin-top: -5px; margin-right: 10px;" width="20px">
+                        <img src="/media/close.png" style="margin-top: -5px;" width="20px">
+                    </div>
+                </div>
+                <div>
+                    <div style="display:inline-block">
+                        <img src="/media/hometown.png" style="display:inline-block; margin-top: -5px;" width="20px">
+                        <p style="display:inline-block; margin-left: 10px;">From {{user.hometown}}</p>
+                    </div>
+                    <div style="display:inline-block; float: right;">
+                        <img src="/media/edit.png" style="margin-top: -5px; margin-right: 10px;" width="20px">
+                        <img src="/media/close.png" style="margin-top: -5px;" width="20px">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+</body>
+</html>
+

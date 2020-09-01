@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <title>Timeline</title>
+</head>
+<body>
+    {% include 'user.html' %}
+    {% block content %}
+    <div class="container">
+        <div class="content" style="padding-left:90px; margin-top: 20px;" >
+            <div class="content_left" style="width: 33%; display: inline-block; margin-right: 2%;" >
+                <div class="content_info" style="margin-bottom: 20px; padding-bottom: 10px;">
+                    <h5>Info</h5>
+                    {% if user.home %}
+                        <p>Lives in {{user.home}}</p>
+                    {% endif %}
+                    {% if user.work %}
+                        <p>Works at {{user.work}}</p>
+                    {% endif %}
+                    {% if user.hometown %}
+                        <p>From {{user.hometown}}</p>
+                    {% endif %}
+                    {% if loggedinuser.id == user.id %}
+                    <button class="btn" style="cursor: pointer; width: 100%; margin-bottom: 10px;" data-toggle="modal" data-target="#updateinfo">Update Details</button>
+                    {% endif %}
+                </div>
+                <div class="content_photo" style="margin-bottom: 20px;">
+                    <h5>Photos</h5>
+                    {% for p in phtopage %}
+                        {% if p.image %}
+                            <a href="/post/{{p.id}}"><img src="{{p.image.url}}" width="101.24px" height="101.24px" style="border: black 1px solid; margin-bottom: 5px;"></a>
+                        {% endif %}
+                    {% endfor %}
+                    <a href="/user/{{user.id}}/photos" style="padding-left: 80%;">See All...</a>
+                </div>
+                <div class="content_friend"  style="margin-bottom: 40px;">
+                    <h5>Friends</h5>
+                    {% for f in friendpage %}
+                    <a href="/user/{{f.flist.id}}">
+                    <div style="display: inline-block; vertical-align: top; width:32%;">
+                        <img src="{{f.flist.pic.url}}" height="101.24px" width="100%" style="border: black 1px solid; margin-bottom: 5px;">
+                        <p>{{f.flist.firstName}} {{f.flist.lastName}}</p>
+                    </div>
+                    </a>
+                    {% endfor %}
+                    <a href="/user/{{user.id}}/friends" style="padding-left: 80%;">See All...</a>
+                </div>
+            </div>
+            <div class="content_right" style="width: 55%; display: inline-block; vertical-align: top;" >
+                {% if loggedinuser.id == user.id %}
+                <div class="content_posting" style="margin-bottom: 20px;">
+                    <form action="/post" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <input type="hidden" name="p_to" id="p_to" value="{{user.id}}">
+                        <input type="text" class="form-control" name="content" id="content" placeholder="What's on your mind, {{user.firstName}}?" style="border-radius: 80px; width: 100%; background-color: #f0f2f5;">
+                        <input type="file" name="image" id="image" style="margin-top: 10px;">
+                        <button type="submit" class="btn" style="margin-left: 29%; background-color: #f0f2f5;">Upload</button>
+                    </form>
+                </div>
+                {% else %}
+                <div class="content_posting" style="margin-bottom: 20px;">
+                    <form action="/post" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <input type="hidden" name="p_to" id="p_to" value="{{user.id}}">
+                        <input type="text" class="form-control" name="content" id="content" placeholder="Write Something to {{user.firstName}}" style="border-radius: 80px; width: 100%; background-color: #f0f2f5;">
+                        <input type="file" name="image" id="image" style="margin-top: 10px;">
+                        <button type="submit" class="btn" style="margin-left: 29%; background-color: #f0f2f5;">Upload</button>
+                    </form>
+                </div>
+                {% endif %}
+                <div class="content_post">
+                    <h5>Posts</h5>
+                    {% for p in posts %}
+                    <div style="border: #f0f2f5 1px solid; padding: 10px 15px; border-radius: 10px; margin: 20px 0px;">
+                        {% if p.p_creater == p.p_to %}
+                        <p><a href="/user/{{p.p_creater.id}}">{{p.p_creater.firstName}} {{p.p_creater.lastName}}</a> Posted at {{p.created_at}}</p>
+                        {% else %}
+                        <p><a href="/user/{{p.p_creater.id}}">{{p.p_creater.firstName}} {{p.p_creater.lastName}}</a> > <a href="/user/{{p.p_to.id}}">{{p.p_to.firstName}} {{p.p_to.lastName}}</a> at {{p.created_at}}</p>
+                        {% endif %}
+                        {% if p.p_creater == loggedinuser or p.p_to == loggedinuser %}
+                        <form action="/deletepost" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <input type="hidden" name="postid" id="postid" value="{{p.id}}">
+                            <input type="image" alt="Submit" src="/media/close.png" style="display: inline; float: right; margin-top: -35px; width:20px">
+                        </form>
+                        {% endif %}
+                        {% if p.image %}
+                        <a href="/post/{{p.id}}"><img src="{{p.image.url}}" width="100%" height="300px" style="border: solid black 1px;"></a>
+                        <br></br>
+                        {% endif %}
+                        <p style="display: inline-block;">{{p.content}}</p>
+                        <div>
+                            {% for c in comments%}
+                                {% if c.c_message == p %}
+                                <p>>> {{c.content}}</p>
+                                {% if p.p_creater == loggedinuser or p.p_to == loggedinuser or c.c_creater == loggedinuser %}
+                                <form action="/deletecomment" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="next" value="{{ request.path }}">
+                                    <input type="hidden" name="commentid" id="commentid" value="{{c.id}}">
+                                    <input type="image" alt="Submit" src="/media/close.png" style="display: inline; float: right; margin-top: -40px; width:20px">
+                                </form>
+                                {% endif %}
+                                <p>Commented by <a href="/user/{{c.c_creater.id}}">{{c.c_creater.firstName}} {{c.c_creater.lastName}}</a> at {{c.created_at}}</p>
+                                {% endif %}
+                            {% endfor %}
+                            <form action="/reply" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" name="next" value="{{ request.path }}">
+                                <input type="hidden" name="c_message" id="c_message" value="{{p.id}}">
+                                <input type="text" class="form-control" name="content" id="content" placeholder="Write Comment Here" style="border-radius: 80px; width: 100%; background-color: #f0f2f5;">
+                            </form>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+    <div class="modal fade" id="updateinfo" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Update Info</h4>
+                </div>
+                <div class="modal-body">
+                    <form action='/user/{{user.id}}/update' method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <input class="form-control" type="text" id="home" name="home" placeholder="Enter Home" style="width: 100%; margin-bottom: 20px;">
+                        <input class="form-control" type="text" id="work" name="work" placeholder="Enter Work" style="width: 100%; margin-bottom: 20px;">
+                        <input class="form-control" type="text" id="hometown" name="hometown" placeholder="Enter Hometown" style="width: 100%;">
+                        <br><br/>
+                        <button type="button" style="float: right;" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" style="float: right; margin-right:10px;" class="btn btn-primary">Save changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

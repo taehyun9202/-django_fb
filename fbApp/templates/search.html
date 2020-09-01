@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <title>Search</title>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    {% block content %}
+    <div class="container">
+        <div class="content" style="padding-left:90px; margin-top: 20px;" >
+            <div class="content_info" style="margin-bottom: 20px; padding-bottom: 10px;">
+                <h5>Find Friends</h5>
+                {% for u in searcheduser %}
+                <div>
+                    <a href="/user/{{u.id}}"><img src="{{u.pic.url}}" style="display: inline-block; border: black 1px solid;width: 125px; height: 125px; margin-bottom: 10px;"></a>
+                    <div style="display: inline-block; vertical-align: top;">
+                        <a href="/user/{{u.id}}"><p>{{u.firstName}} {{u.lastName}}</p></a>
+                        {% if u.home %}
+                            <p>Lives in {{u.home}}</p>
+                        {% endif %}
+                        {% if u.work %}
+                            <p>Works at {{u.work}}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+</body>
+</html>
+

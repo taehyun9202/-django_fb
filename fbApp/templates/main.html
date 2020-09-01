@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'navbar.css' %}">
+</head>
+<body>
+    <div class="sidenav">
+        <div style="display: inline-block;">
+            <a href="/"><h1>FBLike</h1></a>
+        </div>
+        <div class="login">
+            <form action='/login' method='post'>
+                {% csrf_token %}
+                    <input class="logininput" type="email" class="form-control" name="email" id="email" placeholder="Email Address">
+                    <input class="logininput" type="password" class="form-control" name="password" id="password" placeholder="Password">
+                <button type="submit" style="margin-bottom:5px;" class="btn btn-dark btn-sm">Login</button>
+            </form>
+        </div>
+    </div>
+    {% block content %}
+    <div class="container">
+        <div style="padding-left: 50%;">
+        <h1>Create New Account</h1>
+            <form action="/register" method="post">
+                {% csrf_token %}
+                <input class="registerinput" style="width:48%" type="text" name="firstName" placeholder="First Name">
+                <input class="registerinput" style="margin-left:3%; width:48%" type="text" name="lastName" placeholder="Last Name">
+                <br></br>
+                <input class="registerinput" type="email" name="email" placeholder="Email Address">
+                <br></br>
+                <input class="registerinput" type="password" name="password" placeholder="Password">
+                <br></br>
+                <input class="registerinput" type="password" name="confirm" placeholder="Confirm Password">
+                <br></br>
+                <button type="submit" style="width: 100%;" class="btn btn-dark">Register</button>
+            </form>
+        </div>
+    </div>
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navbar</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'navbar.css' %}">
+</head>
+<body>
+    <nav class="navbar" style="background-color:lightskyblue; height: 60px;" >
+        <a href="/home"><h1>FBLike</h1></a>
+        <div style="position: absolute; margin-left: 170px; margin-top: 4px;">
+            <form action='/search' method="post">
+                {% csrf_token %}
+                <input type="text" class="form-control" name="searchtext" placeholder="Search Name or All" style="border-radius: 80px; width: 100%; background-color: #f0f2f5;">
+            </form>
+        </div>
+        <a href="/user/{{loggedinuser.id}}" style="position: absolute; margin-left: 1000px; margin-top: 8px;">
+            <img class="userpic" src={{loggedinuser.pic.url}} style="width: 30px; height: 30px;">
+            <p class="username" style="color: white;">hello {{loggedinuser.firstName}}</p>
+        </a>
+        <div style="position: absolute; margin-left: 1140px;">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Option</a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <a class="dropdown-item" href="/contact">Give Feedback</a>
+                <a class="dropdown-item" href="/edit">Edit</a>
+                <a class="dropdown-item" href="/logout">Log Out</a>
+            </div>
+        </div>
+      </nav>
+    {% block content %}
+    {% endblock %}
+
+</body>
+</html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js" integrity="sha256-SiHXR50l06UwJvHhFY4e5vzwq75vEHH+8fFNpkXePr0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js" integrity="sha256-EPrkNjGEmCWyazb3A/Epj+W7Qm2pB9vnfXw+X6LImPM=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha256-gL1ibrbVcRIHKlCO5OXOPC/lZz/gpdApgQAzskqqXp8=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
